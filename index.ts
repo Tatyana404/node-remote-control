@@ -1,5 +1,5 @@
 import { getMousePos, moveMouse, mouseToggle, screen } from 'robotjs'
-import { WebSocketServer } from 'ws'
+import { createWebSocketStream, WebSocketServer } from 'ws'
 import Jimp from 'jimp'
 import { httpServer } from './src/http_server/index'
 import { Сoordinates } from './src/interfaces/main'
@@ -11,7 +11,9 @@ httpServer.listen(HTTP_PORT, () => console.log(`Start static http server on the 
 const wss = new WebSocketServer({ port: 8080 })
 
 wss.on('connection', ws => {
-  ws.on('message', (data: Buffer) => {
+  const duplex = createWebSocketStream(ws, {encoding: 'utf-8', decodeStrings: false})
+
+  duplex.on('data', (data: Buffer) => {
     const [command, w, l] = data.toString().split(' ')
 
     let { x, y }: { x: number; y: number } = getMousePos()
@@ -24,25 +26,25 @@ wss.on('connection', ws => {
       case 'mouse_up':
         moveMouse(x, y - width)
 
-        ws.send(`${data}\0`)
+        duplex.write(`${data}\0`, 'utf-8')
         break
       case 'mouse_down':
         moveMouse(x, y + width)
 
-        ws.send(`${data}\0`)
+        duplex.write(`${data}\0`, 'utf-8')
         break
       case 'mouse_left':
         moveMouse(x - width, y)
 
-        ws.send(`${data}\0`)
+        duplex.write(`${data}\0`, 'utf-8')
         break
       case 'mouse_right':
         moveMouse(x + width, y)
 
-        ws.send(`${data}\0`)
+        duplex.write(`${data}\0`, 'utf-8')
         break
       case 'mouse_position':
-        ws.send(`${data} ${x},${y}\0`)
+        duplex.write(`${data} ${x},${y}\0`, 'utf-8')
 
         break
       case 'draw_circle':
@@ -89,7 +91,7 @@ wss.on('connection', ws => {
           draw()
         })()
 
-        ws.send(`${data}\0`)
+        duplex.write(`${data}\0`, 'utf-8')
         break
       case 'draw_rectangle':
         mouseToggle('down')
@@ -116,7 +118,7 @@ wss.on('connection', ws => {
           }
         }
 
-        ws.send(`${data}\0`)
+        duplex.write(`${data}\0`, 'utf-8')
         break
       case 'draw_square':
         mouseToggle('down')
@@ -143,7 +145,7 @@ wss.on('connection', ws => {
           }
         }
 
-        ws.send(`${data}\0`)
+        duplex.write(`${data}\0`, 'utf-8')
         break
       case 'prnt_scrn':
         ;(async () => {
@@ -160,16 +162,16 @@ wss.on('connection', ws => {
           )
 
           const base64 = await img.getBase64Async(Jimp.MIME_PNG)
-          ws.send(`${data} ${base64.substring(22)}\0`)
+          duplex.write(`${data} ${base64.substring(22)}\0`, 'utf-8')
         })()
 
         break
       default:
-        ws.send('not_found')
+        duplex.write('not_found\0', 'utf-8')
 
         break
     }
   })
 
-  ws.send('not_found')
+  duplex.write('not_found\0', 'utf-8')
 })
