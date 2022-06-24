@@ -1,36 +1,35 @@
 import robot from 'robotjs';
-import {WebSocketServer} from 'ws';
 import {getPX} from "./common.js";
 
-export function up(command: string, ws: WebSocketServer): void {
+export function up(command: string): string {
     const px = getPX(command);
     const {x, y}: { x: number, y: number } = robot.getMousePos();
     robot.moveMouse(x, y - px);
-    ws.send(command);
+    return command;
 }
 
-export function down(command: string, ws: WebSocketServer): void {
+export function down(command: string): string {
     const px = getPX(command);
     const {x, y}: { x: number, y: number } = robot.getMousePos();
     robot.moveMouse(x, y + px);
-    ws.send(command);
+    return command;
 }
 
-export function left(command: string, ws: WebSocketServer): void {
+export function left(command: string): string {
     const px = getPX(command);
     const {x, y}: { x: number, y: number } = robot.getMousePos();
     robot.moveMouse(x - px, y);
-    ws.send(command);
+    return command;
 }
 
-export function right(command: string, ws: WebSocketServer): void {
+export function right(command: string): string {
     const px = getPX(command);
     const {x, y}: { x: number, y: number } = robot.getMousePos();
     robot.moveMouse(x + px, y);
-    ws.send(command);
+    return command;
 }
 
-export function mousePosition(ws: WebSocketServer): void {
+export function mousePosition(): string {
     const {x, y}: { x: number, y: number } = robot.getMousePos();
-    ws.send(`mouse_position ${x},${y}`);
+    return `mouse_position ${x},${y}`;
 }

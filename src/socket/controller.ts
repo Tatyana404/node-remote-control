@@ -1,27 +1,38 @@
 import * as navigation from './navigation.js';
 import * as drawing from './drawing.js';
 import * as screen from './screen.js'
+import {Transform, TransformCallback} from 'stream';
 
-import {WebSocketServer} from 'ws';
+export class CommandHandler extends Transform {
+    constructor() {
+        super({decodeStrings: false, encoding: 'utf-8'});
+    }
 
-export function controller(command: string, ws: WebSocketServer): void {
-    if (command.startsWith('mouse_up')) {
-        navigation.up(command, ws);
-    } else if (command.startsWith('mouse_down')) {
-        navigation.down(command, ws);
-    } else if (command.startsWith('mouse_left')) {
-        navigation.left(command, ws);
-    } else if (command.startsWith('mouse_right')) {
-        navigation.right(command, ws);
-    } else if (command.startsWith('mouse_position')) {
-        navigation.mousePosition(ws);
-    } else if (command.startsWith('draw_circle')) {
-        drawing.drawCircle(command, ws);
-    } else if (command.startsWith('draw_rectangle')) {
-        drawing.drawRectangle(command, ws);
-    } else if (command.startsWith('draw_square')) {
-        drawing.drawSquare(command, ws);
-    } else if (command.startsWith('prnt_scrn')) {
-        screen.prntScrn(command, ws);
+    async _transform(chunk: any, encoding: BufferEncoding, callback: TransformCallback) {
+        const command: string = chunk.toString();
+        console.log(command);
+        callback(null, await this.controller(command));
+    }
+
+    async controller(command: string): Promise<string> {
+        if (command.startsWith('mouse_up')) {
+            return navigation.up(command);
+        } else if (command.startsWith('mouse_down')) {
+            return navigation.down(command);
+        } else if (command.startsWith('mouse_left')) {
+            return navigation.left(command);
+        } else if (command.startsWith('mouse_right')) {
+            return navigation.right(command);
+        } else if (command.startsWith('mouse_position')) {
+            return navigation.mousePosition();
+        } else if (command.startsWith('draw_circle')) {
+            return drawing.drawCircle(command);
+        } else if (command.startsWith('draw_rectangle')) {
+            return drawing.drawRectangle(command);
+        } else if (command.startsWith('draw_square')) {
+            return drawing.drawSquare(command);
+        } else if (command.startsWith('prnt_scrn')) {
+            return await screen.prntScrn(command);
+        }
     }
 }

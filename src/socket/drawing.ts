@@ -1,14 +1,12 @@
-import {WebSocketServer} from 'ws';
 import robot from "robotjs";
 import {getPX, getTwoPX} from "./common.js";
 
 robot.setMouseDelay(5);
 
-export function drawCircle(command: string, ws: WebSocketServer): void {
+export function drawCircle(command: string): string {
     const radius = getPX(command);
     const {x, y}: { x: number, y: number } = robot.getMousePos();
-    ws.send(command);
-    robot.setMouseDelay(10);
+
     robot.mouseToggle('down', 'left');
     for (let i = 0; i <= Math.PI * 2; i += 0.01) {
         const xO = x + (radius * Math.cos(i)) - radius;
@@ -16,18 +14,19 @@ export function drawCircle(command: string, ws: WebSocketServer): void {
         robot.moveMouse(xO, yO);
     }
     robot.mouseToggle('up', 'left');
+    return command;
 }
 
-export function drawRectangle(command: string, ws: WebSocketServer): void {
+export function drawRectangle(command: string): string {
     const {width, length} = getTwoPX(command);
-    ws.send(command);
     rectangle(width, length);
+    return command;
 }
 
-export function drawSquare(command: string, ws: WebSocketServer): void {
+export function drawSquare(command: string): string {
     const width = getPX(command);
-    ws.send(command);
     rectangle(width, width)
+    return command;
 }
 
 function rectangle(width: number, length: number): void {

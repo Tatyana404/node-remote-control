@@ -1,8 +1,7 @@
-import {WebSocketServer} from 'ws';
-import robot from "robotjs";
+import robot from 'robotjs';
 import Jimp from 'jimp';
 
-export async function prntScrn(command: string, ws: WebSocketServer): Promise<void> {
+export async function prntScrn(command: string): Promise<string> {
     const {x, y}: { x: number, y: number } = robot.getMousePos();
     const img = robot.screen.capture(x, y, 200, 200);
 
@@ -19,6 +18,5 @@ export async function prntScrn(command: string, ws: WebSocketServer): Promise<vo
     });
 
     const base64 = await jimp.getBufferAsync(Jimp.MIME_PNG);
-    ws.send(`prnt_scrn ${base64.toString('base64')}`);
-
+    return `prnt_scrn ${base64.toString('base64')}`;
 }
