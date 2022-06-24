@@ -1,11 +1,6 @@
 import robot from 'robotjs';
 import {WebSocketServer} from 'ws';
-
-robot.setMouseDelay(10);
-
-function getPX(command: string): number {
-    return +command.split(' ')[1];
-}
+import {getPX} from "./common.js";
 
 export function up(command: string, ws: WebSocketServer): void {
     const px = getPX(command);

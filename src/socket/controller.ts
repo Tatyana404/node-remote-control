@@ -1,5 +1,6 @@
-import * as navigation from "./navigation.js";
-import * as drawing from "./drawing.js";
+import * as navigation from './navigation.js';
+import * as drawing from './drawing.js';
+import * as screen from './screen.js'
 
 import {WebSocketServer} from 'ws';
 
@@ -16,5 +17,11 @@ export function controller(command: string, ws: WebSocketServer): void {
         navigation.mousePosition(ws);
     } else if (command.startsWith('draw_circle')) {
         drawing.drawCircle(command, ws);
-    }//draw_circle
+    } else if (command.startsWith('draw_rectangle')) {
+        drawing.drawRectangle(command, ws);
+    } else if (command.startsWith('draw_square')) {
+        drawing.drawSquare(command, ws);
+    } else if (command.startsWith('prnt_scrn')) {
+        screen.prntScrn(command, ws);
+    }
 }
