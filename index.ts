@@ -11,6 +11,8 @@ httpServer.listen(HTTP_PORT, () => console.log(`Start static http server on the 
 
 const wss = new WebSocketServer({ port: SOCKET_PORT })
 
+wss.on('headers', (parameters: string[]) => console.log('Websocket parameters', parameters))
+
 wss.on('connection', ws => {
   const duplex = createWebSocketStream(ws, {encoding: 'utf-8', decodeStrings: false})
 
@@ -249,4 +251,8 @@ wss.on('connection', ws => {
   duplex.write('not_found\0', 'utf-8')
 })
 
-wss.on('headers', (parameters: string[]) => console.log('Websocket parameters', parameters))
+process.on('SIGINT',()=>{
+  process.stdout.write('Closing websocket connection...')
+  wss.close()
+  process.exit()
+})
