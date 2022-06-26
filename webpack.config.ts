@@ -10,6 +10,16 @@ module.exports = {
     extensions: ['.ts', '.js']
   },
   module: {
-    rules: [{ test: /\.ts?$/, loader: 'ts-loader' }]
+    rules: [
+      { test: /\.ts?$/, loader: 'ts-loader' },
+      {
+        test: /\.node$/,
+        loader: 'node-loader'
+      }
+    ]
+  },
+  externals: {
+    bufferutil: 'bufferutil',
+    'utf-8-validate': 'utf-8-validate'
   }
 }
