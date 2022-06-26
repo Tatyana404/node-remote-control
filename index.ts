@@ -1,10 +1,11 @@
 import { createWebSocketStream, WebSocketServer } from 'ws'
 import { getMousePos } from 'robotjs'
+import 'dotenv/config'
 import { httpServer } from './src/http_server/index'
 import * as _ from './src/modules'
 
-const HTTP_PORT = 3000
-const SOCKET_PORT = 8080
+const HTTP_PORT: number = parseInt(process.env.HTTP_PORT as string) || 4000
+const SOCKET_PORT: number = parseInt(process.env.SOCKET_PORT as string) || 8080
 
 httpServer.listen(HTTP_PORT, () => console.log(`Start static http server on the ${HTTP_PORT} port!\nStart web socket server on the ${SOCKET_PORT} port!`))
 
