@@ -1,5 +1,6 @@
-import { createWebSocketStream, WebSocketServer } from 'ws'
+import { createWebSocketStream, WebSocketServer, WebSocket } from 'ws'
 import { getMousePos } from 'robotjs'
+import { Duplex } from 'stream'
 import 'dotenv/config'
 import { httpServer } from './src/http_server/index'
 import * as _ from './src/modules'
@@ -13,8 +14,8 @@ const wss = new WebSocketServer({ port: SOCKET_PORT })
 
 wss.on('headers', (parameters: string[]) => console.log('Websocket parameters', parameters))
 
-wss.on('connection', ws => {
-  const duplex = createWebSocketStream(ws, {encoding: 'utf-8', decodeStrings: false})
+wss.on('connection', (ws: WebSocket) => {
+  const duplex: Duplex = createWebSocketStream(ws, {encoding: 'utf-8', decodeStrings: false})
 
   duplex.write('not_found\0', 'utf-8')
 

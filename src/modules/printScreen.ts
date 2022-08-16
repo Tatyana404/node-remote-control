@@ -1,7 +1,8 @@
 import { screen } from 'robotjs'
+import { Duplex } from 'stream'
 import Jimp from 'jimp'
 
-export const takeScreenshot = async (x: number, y: number, duplex: any, command: string) => {
+export const takeScreenshot = async (x: number, y: number, duplex: Duplex, command: string) => {
   const { image, width, height } = screen.capture(x, y, 200, 200)
   const img = new Jimp(width, height)
   let pos = 0

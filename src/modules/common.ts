@@ -1,4 +1,6 @@
-export const mainWrapper = (command: string, duplex: any, commandFunction?: void, customWrite?: any, isWrite?: boolean) => {
+import { Duplex } from 'stream'
+
+export const mainWrapper = (command: string, duplex: Duplex, commandFunction?: void, customWrite?: boolean, isWrite?: boolean) => {
   if (isWrite) {
     try {
       commandFunction && commandFunction
