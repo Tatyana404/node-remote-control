@@ -1,0 +1,19 @@
+{
+  "ts-node": {
+    "transpileOnly": true,
+    "files": true
+  },
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "module": "commonjs",
+    "sourceMap": true,
+    "target": "es6",
+    "strict": true
+  },
+  "allowJs": true,
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
+}
